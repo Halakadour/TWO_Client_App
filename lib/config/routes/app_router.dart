@@ -13,6 +13,7 @@ import 'package:two_client_app/features/profile/pages/profile_page.dart';
 import 'package:two_client_app/features/projects/pages/create_project_page.dart';
 import 'package:two_client_app/features/projects/pages/edit_project_request_page.dart';
 import 'package:two_client_app/features/projects/pages/project_detailes_page.dart';
+import 'package:two_client_app/features/projects/pages/project_meeting_page.dart';
 import 'package:two_client_app/features/projects/pages/projects_page.dart';
 import 'package:two_client_app/features/projects/pages/recent_project_page.dart';
 import 'package:two_client_app/features/projects/pages/update_project_page.dart';
@@ -83,6 +84,12 @@ class AppRouter {
                 path: '/project-edit-requests',
                 builder: (context, state) =>
                     EditProjectRequestPage(projectId: state.extra as int),
+              ),
+              GoRoute(
+                name: AppRouteConfig.projectMeetings,
+                path: '/project-meetings',
+                builder: (context, state) =>
+                    ProjectMeetingPage(projectId: state.extra as int),
               ),
               GoRoute(
                 name: AppRouteConfig.updateProject,

@@ -19,6 +19,7 @@ import 'package:two_client_app/core/widgets/status-boxs/empty_status_animation.d
 import 'package:two_client_app/core/widgets/status-boxs/error_status_box.dart';
 import 'package:two_client_app/features/app/bloc/app_bloc.dart';
 import 'package:two_client_app/features/app/data/models/single-models/contract_model.dart';
+import 'package:two_client_app/features/app/data/models/single-models/meeting_model.dart';
 import 'package:two_client_app/features/app/data/models/single-models/message_model.dart';
 import 'package:two_client_app/features/app/data/models/single-models/notification_model.dart';
 import 'package:two_client_app/features/app/data/models/single-models/project.dart';
@@ -26,28 +27,13 @@ import 'package:two_client_app/features/app/data/models/single-models/project_mo
 import 'package:two_client_app/features/contract/widgets/custom_contract_list_tile.dart';
 import 'package:two_client_app/features/home/widgets/notification_card.dart';
 import 'package:two_client_app/features/projects/widgets/custom_project_card.dart';
+import 'package:two_client_app/features/projects/widgets/meeting_card.dart';
 import 'package:two_client_app/features/projects/widgets/message_card.dart';
 
 class AppBlocStateHandling {
-  // Login
-  Future<void> login(AppState state, BuildContext context) async {
-    if (state.userModelStatus == CasualStatus.loading) {
-      showLoadingDialog(context);
-    } else if (state.userModelStatus == CasualStatus.success) {
-      context.pop();
-      await SharedPreferencesServices.setUserToken(state.userModel!.token);
-      showSuccessDialog(
-        context,
-        () => context.pushReplacementNamed(AppRouteConfig.home),
-      );
-    } else if (state.userModelStatus == CasualStatus.failure) {
-      context.pop();
-      showErrorDialog(context, state.errorMessage);
-    } else {
-      const SizedBox();
-    }
-  }
-
+  ///////////////////////////////////////////////////////////////////////////////////////////////////
+  /////////////////////////////////   ** FAKE-DATA **  /////////////////////////////////////////////
+  /////////////////////////////////////////////////////////////////////////////////////////////////
   final fakeProject = List.filled(
     7,
     ProjectModel(
@@ -135,7 +121,44 @@ class AppBlocStateHandling {
 
   final fakeMessages = List.filled(7, MessageModel(message: "Message"));
 
-  // Home Page
+  final fakeMeeting = List.filled(
+    7,
+    MeetingModel(
+      id: 0,
+      date: DateTime.now(),
+      meetingType: "meetingType",
+      projectId: 0,
+      createdAt: DateTime.now(),
+      updatedAt: DateTime.now(),
+    ),
+  );
+
+  ///////////////////////////////////////////////////////////////////////////////////////////////////
+  /////////////////////////////////   ** AUTH-PAGE **  /////////////////////////////////////////////
+  /////////////////////////////////////////////////////////////////////////////////////////////////
+
+  Future<void> login(AppState state, BuildContext context) async {
+    if (state.userModelStatus == CasualStatus.loading) {
+      showLoadingDialog(context);
+    } else if (state.userModelStatus == CasualStatus.success) {
+      context.pop();
+      await SharedPreferencesServices.setUserToken(state.userModel!.token);
+      showSuccessDialog(
+        context,
+        () => context.pushReplacementNamed(AppRouteConfig.home),
+      );
+    } else if (state.userModelStatus == CasualStatus.failure) {
+      context.pop();
+      showErrorDialog(context, state.errorMessage);
+    } else {
+      const SizedBox();
+    }
+  }
+
+  ///////////////////////////////////////////////////////////////////////////////////////////////////
+  /////////////////////////////////   ** HOME-PAGE **  /////////////////////////////////////////////
+  /////////////////////////////////////////////////////////////////////////////////////////////////
+
   Widget getUserHeader(AppState state, BuildContext context) {
     if (state.userHeaderStatus == CasualStatus.success) {
       return GestureDetector(
@@ -250,7 +273,10 @@ class AppBlocStateHandling {
     }
   }
 
-  // Notification Page
+  ///////////////////////////////////////////////////////////////////////////////////////////////////
+  /////////////////////////////////   ** NOTIFICATION-PAGE **  /////////////////////////////////////
+  /////////////////////////////////////////////////////////////////////////////////////////////////
+
   Widget showUnReadNotificationList(AppState state) {
     if (state.unreadNotifiListStatus == CasualStatus.loading) {
       return Skeletonizer(
@@ -275,8 +301,10 @@ class AppBlocStateHandling {
       return SizedBox();
     }
   }
+  ///////////////////////////////////////////////////////////////////////////////////////////////////
+  /////////////////////////////////   ** PROJECT-PAGE **  //////////////////////////////////////////
+  /////////////////////////////////////////////////////////////////////////////////////////////////
 
-  // Project Page
   Widget showProjectList(AppState state) {
     if (state.projectListStatus == CasualStatus.loading) {
       return Skeletonizer(
@@ -351,6 +379,31 @@ class AppBlocStateHandling {
     }
   }
 
+  Widget showProjectMeetingList(AppState state) {
+    if (state.projectMeetingListStatus == CasualStatus.loading) {
+      return Skeletonizer(
+        enabled: true,
+        child: Expanded(
+          child: ListView.builder(
+            itemCount: fakeMeeting.length,
+            itemBuilder: (context, index) =>
+                MeetingCard(meetingModel: fakeMeeting[index]),
+          ),
+        ),
+      );
+    } else if (state.projectMeetingListStatus == CasualStatus.success) {
+      return ListView.builder(
+        itemCount: state.projectMeetingList.length,
+        itemBuilder: (context, index) =>
+            MeetingCard(meetingModel: state.projectMeetingList[index]),
+      );
+    } else if (state.projectMeetingListStatus == CasualStatus.failure) {
+      return ErrorStatusBox(errorMessage: state.errorMessage);
+    } else {
+      return SizedBox();
+    }
+  }
+
   Future<void> createProject(AppState state, BuildContext context) async {
     if (state.createProjectStatus == CasualStatus.loading) {
       showLoadingDialog(context);
@@ -383,7 +436,10 @@ class AppBlocStateHandling {
     }
   }
 
-  // Contract Page
+  ///////////////////////////////////////////////////////////////////////////////////////////////////
+  /////////////////////////////////   ** CONTRACT-PAGE **  /////////////////////////////////////////
+  /////////////////////////////////////////////////////////////////////////////////////////////////
+
   Widget showContractList(AppState state) {
     if (state.contractListStatus == CasualStatus.loading) {
       return Skeletonizer(
@@ -429,7 +485,10 @@ class AppBlocStateHandling {
     }
   }
 
-  // Profile Page
+  ///////////////////////////////////////////////////////////////////////////////////////////////////
+  /////////////////////////////////   ** PROFILE-PAGE **  //////////////////////////////////////////
+  /////////////////////////////////////////////////////////////////////////////////////////////////
+
   Widget getUserProfile(AppState state) {
     if (state.userProfileStatus == CasualStatus.loading) {
       return Skeletonizer(

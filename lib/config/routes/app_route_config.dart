@@ -16,6 +16,7 @@ class AppRouteConfig {
   static const project = 'project';
   static const projectDetailes = 'project-details';
   static const projectEditRequests = 'project-edit-requests';
+  static const projectMeetings = 'project-meetings';
   static const createProject = 'create-project';
   static const updateProject = 'update-project';
 
