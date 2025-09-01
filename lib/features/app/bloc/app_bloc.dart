@@ -6,6 +6,7 @@ import 'package:two_client_app/core/param/casule_param.dart';
 import 'package:two_client_app/core/services/shared_preferences_services.dart';
 import 'package:two_client_app/features/app/data/models/response-models/login_response_model.dart';
 import 'package:two_client_app/features/app/data/models/single-models/contract_model.dart';
+import 'package:two_client_app/features/app/data/models/single-models/meeting_model.dart';
 import 'package:two_client_app/features/app/data/models/single-models/message_model.dart';
 import 'package:two_client_app/features/app/data/models/single-models/notification_model.dart';
 import 'package:two_client_app/features/app/data/models/single-models/profile_model.dart';
@@ -14,12 +15,14 @@ import 'package:two_client_app/features/app/domain/usecasee/create_project_useca
 import 'package:two_client_app/features/app/domain/usecasee/get_user_profile_usecase.dart';
 import 'package:two_client_app/features/app/domain/usecasee/login_usecase.dart';
 import 'package:two_client_app/features/app/domain/usecasee/logout_usecase.dart';
+import 'package:two_client_app/features/app/domain/usecasee/rate_project_usecase.dart';
 import 'package:two_client_app/features/app/domain/usecasee/sent_edit_contract_request_usecase.dart';
 import 'package:two_client_app/features/app/domain/usecasee/sent_edit_project_request_usecase.dart';
 import 'package:two_client_app/features/app/domain/usecasee/show_contract_list_usecase.dart';
 import 'package:two_client_app/features/app/domain/usecasee/show_notification_usecase.dart';
 import 'package:two_client_app/features/app/domain/usecasee/show_project_edit_request_usecase.dart';
 import 'package:two_client_app/features/app/domain/usecasee/show_project_list_usecase.dart';
+import 'package:two_client_app/features/app/domain/usecasee/show_project_meeting_list_usecase.dart';
 import 'package:two_client_app/features/app/domain/usecasee/show_unread_notification_usecase.dart';
 import 'package:two_client_app/features/app/domain/usecasee/sign_contract_usecase.dart';
 import 'package:two_client_app/features/app/domain/usecasee/update_project_usecase.dart';
@@ -36,6 +39,8 @@ class AppBloc extends Bloc<AppEvent, AppState> {
   final ShowProjectEditRequestUsecase showProjectEditRequestUsecase;
   final CreateProjectUsecase createProjectUsecase;
   final UpdateProjectUsecase updateProjectUsecase;
+  final RateProjectUsecase rateProjectUsecase;
+  final ShowProjectMeetingListUsecase showProjectMeetingListUsecase;
   final GetContractListUsecase getContractListUsecase;
   final SentEditContractRequestUsecase sentEditContractRequestUsecase;
   final SignContractUsecase signContractUsecase;
@@ -50,6 +55,8 @@ class AppBloc extends Bloc<AppEvent, AppState> {
     required this.showProjectEditRequestUsecase,
     required this.createProjectUsecase,
     required this.updateProjectUsecase,
+    required this.rateProjectUsecase,
+    required this.showProjectMeetingListUsecase,
     required this.getContractListUsecase,
     required this.sentEditContractRequestUsecase,
     required this.signContractUsecase,
@@ -342,6 +349,40 @@ class AppBloc extends Bloc<AppEvent, AppState> {
       } else {
         emit(state.copyWith(updateProjectStatus: CasualStatus.notAuthorized));
       }
+    });
+    on<RateProjectEvent>((event, emit) async {
+      emit(state.copyWith(rateProjectStatus: CasualStatus.loading));
+      final token = await SharedPreferencesServices.getUserToken();
+      if (token != null) {
+        final result = await rateProjectUsecase.call(
+          RateProjectParam(
+            token: token,
+            projectId: event.projectId.toString(),
+            rating: event.rating.toString(),
+          ),
+        );
+        result.fold(
+          (l) => emit(state.copyWith(rateProjectStatus: CasualStatus.failure)),
+          (r) => emit(state.copyWith(rateProjectStatus: CasualStatus.success)),
+        );
+      } else {
+        emit(state.copyWith(rateProjectStatus: CasualStatus.notAuthorized));
+      }
+    });
+    on<ShowProjectMeetingsListEvent>((event, emit) async {
+      emit(state.copyWith(projectMeetingListStatus: CasualStatus.loading));
+      final result = await showProjectMeetingListUsecase.call(event.projectId);
+      result.fold(
+        (l) => emit(
+          state.copyWith(projectMeetingListStatus: CasualStatus.failure),
+        ),
+        (r) => emit(
+          state.copyWith(
+            projectMeetingListStatus: CasualStatus.success,
+            projectMeetingList: r,
+          ),
+        ),
+      );
     });
     ///////////////////////////////////////////////////////////////////////////////////////
     ///////////////////////////////////////////////////////////////////////////////////////

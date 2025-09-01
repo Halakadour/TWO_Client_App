@@ -88,6 +88,17 @@ class UpdateProjectEvent extends AppEvent {
   });
 }
 
+class RateProjectEvent extends AppEvent {
+  int projectId;
+  int rating;
+  RateProjectEvent({required this.projectId, required this.rating});
+}
+
+class ShowProjectMeetingsListEvent extends AppEvent {
+  int projectId;
+  ShowProjectMeetingsListEvent({required this.projectId});
+}
+
 // Contract Page
 class GetContractListEvent extends AppEvent {
   int? statusFilter;

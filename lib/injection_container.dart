@@ -10,12 +10,14 @@ import 'package:two_client_app/features/app/domain/usecasee/create_project_useca
 import 'package:two_client_app/features/app/domain/usecasee/get_user_profile_usecase.dart';
 import 'package:two_client_app/features/app/domain/usecasee/login_usecase.dart';
 import 'package:two_client_app/features/app/domain/usecasee/logout_usecase.dart';
+import 'package:two_client_app/features/app/domain/usecasee/rate_project_usecase.dart';
 import 'package:two_client_app/features/app/domain/usecasee/sent_edit_contract_request_usecase.dart';
 import 'package:two_client_app/features/app/domain/usecasee/sent_edit_project_request_usecase.dart';
 import 'package:two_client_app/features/app/domain/usecasee/show_contract_list_usecase.dart';
 import 'package:two_client_app/features/app/domain/usecasee/show_notification_usecase.dart';
 import 'package:two_client_app/features/app/domain/usecasee/show_project_edit_request_usecase.dart';
 import 'package:two_client_app/features/app/domain/usecasee/show_project_list_usecase.dart';
+import 'package:two_client_app/features/app/domain/usecasee/show_project_meeting_list_usecase.dart';
 import 'package:two_client_app/features/app/domain/usecasee/show_unread_notification_usecase.dart';
 import 'package:two_client_app/features/app/domain/usecasee/sign_contract_usecase.dart';
 import 'package:two_client_app/features/app/domain/usecasee/update_project_usecase.dart';
@@ -37,6 +39,8 @@ Future<void> init() async {
       showProjectEditRequestUsecase: sl(),
       createProjectUsecase: sl(),
       updateProjectUsecase: sl(),
+      rateProjectUsecase: sl(),
+      showProjectMeetingListUsecase: sl(),
       signContractUsecase: sl(),
       getNotificationUsecase: sl(),
       getUnreadNotificationUsecase: sl(),
@@ -51,6 +55,8 @@ Future<void> init() async {
   sl.registerLazySingleton(() => ShowProjectEditRequestUsecase(sl()));
   sl.registerLazySingleton(() => CreateProjectUsecase(sl()));
   sl.registerLazySingleton(() => UpdateProjectUsecase(sl()));
+  sl.registerLazySingleton(() => RateProjectUsecase(sl()));
+  sl.registerLazySingleton(() => ShowProjectMeetingListUsecase(sl()));
   sl.registerLazySingleton(() => GetContractListUsecase(sl()));
   sl.registerLazySingleton(() => SentEditContractRequestUsecase(sl()));
   sl.registerLazySingleton(() => SignContractUsecase(sl()));

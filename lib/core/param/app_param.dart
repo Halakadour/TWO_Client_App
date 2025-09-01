@@ -103,3 +103,15 @@ class ShowProjectEditRequestParam {
 
   ShowProjectEditRequestParam({required this.projectId, required this.token});
 }
+
+class RateProjectParam {
+  final String token;
+  final String projectId;
+  final String rating;
+
+  RateProjectParam({
+    required this.token,
+    required this.projectId,
+    required this.rating,
+  });
+}

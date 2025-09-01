@@ -29,6 +29,9 @@ class AppState {
   List<MessageModel> showProjectEditRequestList;
   CasualStatus createProjectStatus;
   CasualStatus updateProjectStatus;
+  CasualStatus rateProjectStatus;
+  CasualStatus projectMeetingListStatus;
+  List<MeetingModel> projectMeetingList;
 
   // Contract Page
   CasualStatus contractListStatus;
@@ -61,6 +64,9 @@ class AppState {
     this.showProjectEditRequestList = const [],
     this.createProjectStatus = CasualStatus.initial,
     this.updateProjectStatus = CasualStatus.initial,
+    this.rateProjectStatus = CasualStatus.initial,
+    this.projectMeetingListStatus = CasualStatus.initial,
+    this.projectMeetingList = const [],
     this.contractListStatus = CasualStatus.initial,
     this.contractList = const [],
     this.sentEditContractRequestStatus = CasualStatus.initial,
@@ -91,6 +97,9 @@ class AppState {
     List<MessageModel>? showProjectEditRequestList,
     CasualStatus? createProjectStatus,
     CasualStatus? updateProjectStatus,
+    CasualStatus? rateProjectStatus,
+    CasualStatus? projectMeetingListStatus,
+    List<MeetingModel>? projectMeetingList,
     CasualStatus? contractListStatus,
     List<ContractModel>? contractList,
     CasualStatus? sentEditContractRequestStatus,
@@ -127,6 +136,10 @@ class AppState {
           showProjectEditRequestList ?? this.showProjectEditRequestList,
       createProjectStatus: createProjectStatus ?? this.createProjectStatus,
       updateProjectStatus: updateProjectStatus ?? this.updateProjectStatus,
+      rateProjectStatus: rateProjectStatus ?? this.rateProjectStatus,
+      projectMeetingListStatus:
+          projectMeetingListStatus ?? this.projectMeetingListStatus,
+      projectMeetingList: projectMeetingList ?? this.projectMeetingList,
       contractListStatus: contractListStatus ?? this.contractListStatus,
       contractList: contractList ?? this.contractList,
       sentEditContractRequestStatus:

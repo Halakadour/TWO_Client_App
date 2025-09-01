@@ -5,6 +5,7 @@ import 'package:two_client_app/core/param/casule_param.dart';
 import 'package:two_client_app/features/app/data/datasource/app_remote_datasource.dart';
 import 'package:two_client_app/features/app/data/models/response-models/login_response_model.dart';
 import 'package:two_client_app/features/app/data/models/single-models/contract_model.dart';
+import 'package:two_client_app/features/app/data/models/single-models/meeting_model.dart';
 import 'package:two_client_app/features/app/data/models/single-models/message_model.dart';
 import 'package:two_client_app/features/app/data/models/single-models/notification_model.dart';
 import 'package:two_client_app/features/app/data/models/single-models/profile_model.dart';
@@ -153,6 +154,30 @@ class AppRepoImpl extends AppRepo {
       tryCall: () async {
         await appRemoteDatasource.createProject(param);
         return Right(unit);
+      },
+    );
+  }
+
+  @override
+  Future<Either<Failure, Unit>> rateProject(RateProjectParam param) {
+    return wrapHandling(
+      tryCall: () async {
+        await appRemoteDatasource.rateProject(param);
+        return Right(unit);
+      },
+    );
+  }
+
+  @override
+  Future<Either<Failure, List<MeetingModel>>> showProjectMeetingList(
+    int projectId,
+  ) {
+    return wrapHandling(
+      tryCall: () async {
+        final result = await appRemoteDatasource.showProjectMeetingList(
+          projectId,
+        );
+        return Right(result.data);
       },
     );
   }

@@ -5,6 +5,7 @@ import 'package:two_client_app/core/param/app_param.dart';
 import 'package:two_client_app/core/param/casule_param.dart';
 import 'package:two_client_app/features/app/data/models/response-models/login_response_model.dart';
 import 'package:two_client_app/features/app/data/models/single-models/contract_model.dart';
+import 'package:two_client_app/features/app/data/models/single-models/meeting_model.dart';
 import 'package:two_client_app/features/app/data/models/single-models/message_model.dart';
 import 'package:two_client_app/features/app/data/models/single-models/notification_model.dart';
 import 'package:two_client_app/features/app/data/models/single-models/profile_model.dart';
@@ -34,6 +35,14 @@ abstract class AppRepo with HandlingExceptionManager {
   /// sent edit request for the project
   Future<Either<Failure, Unit>> sentEditProjectRequest(
     EditProjectRequestParam param,
+  );
+
+  /// rate project
+  Future<Either<Failure, Unit>> rateProject(RateProjectParam param);
+
+  /// show project meeting list
+  Future<Either<Failure, List<MeetingModel>>> showProjectMeetingList(
+    int projectId,
   );
 
   /// client sign contract

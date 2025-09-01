@@ -1,4 +1,5 @@
 import 'package:two_client_app/config/constants/baseuri.dart';
+import 'package:two_client_app/core/api/get_api.dart';
 import 'package:two_client_app/core/api/get_with_token_api.dart';
 import 'package:two_client_app/core/api/post_api.dart';
 import 'package:two_client_app/core/api/post_api_with_token.dart';
@@ -12,6 +13,7 @@ import 'package:two_client_app/features/app/data/models/response-models/show_con
 import 'package:two_client_app/features/app/data/models/response-models/show_notification_response_model.dart';
 import 'package:two_client_app/features/app/data/models/response-models/show_project_edit_request_list_response_model.dart';
 import 'package:two_client_app/features/app/data/models/response-models/show_project_list_response_model.dart';
+import 'package:two_client_app/features/app/data/models/response-models/show_project_meeting_list_reponse_model.dart';
 import 'package:two_client_app/features/app/data/models/response-models/show_unread_notification_response_model.dart';
 
 abstract class AppRemoteDatasource {
@@ -35,12 +37,20 @@ abstract class AppRemoteDatasource {
   /// update project
   Future<EmptyResponseModel> updateProject(UpdateProjectParam param);
 
-  ///create project
+  /// create project
   Future<CreateProjectResponseModel> createProject(CreateProjectParam param);
 
   /// Show Project Edit Request
   Future<ShowProjectEditRequestListResponseModel> showProjectEditRequest(
     ShowProjectEditRequestParam param,
+  );
+
+  /// rate project
+  Future<EmptyResponseModel> rateProject(RateProjectParam param);
+
+  /// show project meeting list
+  Future<ShowProjectMeetingListResponseModel> showProjectMeetingList(
+    int projectId,
   );
 
   /// client sign contract
@@ -110,11 +120,11 @@ class AppRemoteDatasourceImpl extends AppRemoteDatasource {
     EditProjectRequestParam param,
   ) async {
     final result = PostWithTokenApi(
-      uri: Uri.parse("$baseUri/api/edit/project/request"),
+      uri: Uri.parse("$baseUri/api/client/request/project/edit"),
       token: param.token,
       body: ({
-        'message': param.editMessage,
         'project_id': param.projectId.toString(),
+        'message': param.editMessage,
       }),
       fromJson: emptyResponseModelFromJson,
     );
@@ -280,5 +290,27 @@ class AppRemoteDatasourceImpl extends AppRemoteDatasource {
       );
       return await result.call();
     }
+  }
+
+  @override
+  Future<EmptyResponseModel> rateProject(RateProjectParam param) async {
+    final result = PostWithTokenApi(
+      uri: Uri.parse("$baseUri/api/review/project"),
+      token: param.token,
+      body: ({"project_id": param.projectId, "review": param.rating}),
+      fromJson: emptyResponseModelFromJson,
+    );
+    return await result.call();
+  }
+
+  @override
+  Future<ShowProjectMeetingListResponseModel> showProjectMeetingList(
+    int projectId,
+  ) async {
+    final reslut = GetApi(
+      uri: Uri.parse("$baseUri/api/show/project/meetings/$projectId"),
+      fromJson: showProjectMeetingListResponseModelFromJson,
+    );
+    return await reslut.callRequest();
   }
 }
