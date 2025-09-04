@@ -78,7 +78,7 @@ class _HomePageState extends State<HomePage> {
               ),
               PaddingConfig.h8,
               Expanded(
-                flex: 7,
+                flex: 8,
                 child: BlocBuilder<AppBloc, AppState>(
                   buildWhen: (previous, current) =>
                       previous.homeProjectListStatus !=

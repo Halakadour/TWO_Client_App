@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:iconsax/iconsax.dart';
 import 'package:two_client_app/config/constants/padding_config.dart';
@@ -6,7 +7,10 @@ import 'package:two_client_app/config/paths/assets_path.dart';
 import 'package:two_client_app/config/routes/app_route_config.dart';
 import 'package:two_client_app/config/theme/color.dart';
 import 'package:two_client_app/config/theme/text_style.dart';
+import 'package:two_client_app/core/functions/bloc_state_handling/app_bloc_state_handling.dart';
+import 'package:two_client_app/core/widgets/dialogs/rating_project_dialog.dart';
 import 'package:two_client_app/core/widgets/dialogs/sent_edit_project_request_dialog.dart';
+import 'package:two_client_app/features/app/bloc/app_bloc.dart';
 import 'package:two_client_app/features/app/data/models/single-models/project_model.dart';
 import 'package:two_client_app/features/projects/widgets/custom_project_details_column.dart';
 import 'package:two_client_app/features/projects/widgets/shown_project_details_column.dart';
@@ -45,70 +49,80 @@ class ProjectDetailesPage extends StatelessWidget {
         actions: [
           Padding(
             padding: const EdgeInsets.only(right: 10, bottom: 60),
-            child: IconButton(
-              onPressed: () {},
-              icon: PopupMenuButton(
-                shape: const RoundedRectangleBorder(
-                  borderRadius: BorderRadius.only(
-                    bottomLeft: Radius.circular(12),
-                    bottomRight: Radius.circular(12),
-                    topLeft: Radius.circular(12),
+            child: BlocListener<AppBloc, AppState>(
+              listenWhen: (previous, current) =>
+                  previous.rateProjectStatus != current.rateProjectStatus,
+              listener: (context, state) {
+                AppBlocStateHandling().rateProject(state, context);
+              },
+              child: IconButton(
+                onPressed: () {},
+                icon: PopupMenuButton(
+                  shape: const RoundedRectangleBorder(
+                    borderRadius: BorderRadius.only(
+                      bottomLeft: Radius.circular(12),
+                      bottomRight: Radius.circular(12),
+                      topLeft: Radius.circular(12),
+                    ),
                   ),
+                  position: PopupMenuPosition.under,
+                  itemBuilder: (context) => [
+                    PopupMenuItem(
+                      onTap: () =>
+                          showProjectRatingDialog(context, projectModel.id),
+                      child: CustomIconWithText(
+                        color: AppColors.yellow2,
+                        icon: Iconsax.star,
+                        text: 'Rate Project',
+                      ),
+                    ),
+                    PopupMenuItem(
+                      onTap: () => context.pushNamed(
+                        AppRouteConfig.updateProject,
+                        extra: projectModel,
+                      ),
+                      child: CustomIconWithText(
+                        color: AppColors.blue4,
+                        icon: Iconsax.brush_4,
+                        text: 'Edit Project',
+                      ),
+                    ),
+                    PopupMenuItem(
+                      onTap: () => context.pushNamed(
+                        AppRouteConfig.projectMeetings,
+                        extra: projectModel.id,
+                      ),
+                      child: CustomIconWithText(
+                        color: AppColors.black,
+                        icon: Iconsax.calendar_1,
+                        text: 'View Meetings',
+                      ),
+                    ),
+                    PopupMenuItem(
+                      onTap: () => context.pushNamed(
+                        AppRouteConfig.projectEditRequests,
+                        extra: projectModel.id,
+                      ),
+                      child: CustomIconWithText(
+                        color: AppColors.black,
+                        icon: Iconsax.direct_inbox,
+                        text: 'View Edit Requests',
+                      ),
+                    ),
+                    PopupMenuItem(
+                      onTap: () => sentEditProjectRequestDialog(
+                        context,
+                        projectModel.id,
+                      ),
+                      child: CustomIconWithText(
+                        color: AppColors.black,
+                        icon: Iconsax.send_2,
+                        text: 'Sent Edit Message',
+                      ),
+                    ),
+                  ],
+                  child: const Icon(Iconsax.more, color: AppColors.cardColor),
                 ),
-                position: PopupMenuPosition.under,
-                itemBuilder: (context) => [
-                  PopupMenuItem(
-                    onTap: () {},
-                    child: CustomIconWithText(
-                      color: AppColors.yellow2,
-                      icon: Iconsax.star,
-                      text: 'Rate Project',
-                    ),
-                  ),
-                  PopupMenuItem(
-                    onTap: () => context.pushNamed(
-                      AppRouteConfig.updateProject,
-                      extra: projectModel,
-                    ),
-                    child: CustomIconWithText(
-                      color: AppColors.blue4,
-                      icon: Iconsax.brush_4,
-                      text: 'Edit Project',
-                    ),
-                  ),
-                  PopupMenuItem(
-                    onTap: () => context.pushNamed(
-                      AppRouteConfig.projectMeetings,
-                      extra: projectModel.id,
-                    ),
-                    child: CustomIconWithText(
-                      color: AppColors.black,
-                      icon: Iconsax.calendar_1,
-                      text: 'View Meetings',
-                    ),
-                  ),
-                  PopupMenuItem(
-                    onTap: () => context.pushNamed(
-                      AppRouteConfig.projectEditRequests,
-                      extra: projectModel.id,
-                    ),
-                    child: CustomIconWithText(
-                      color: AppColors.black,
-                      icon: Iconsax.direct_inbox,
-                      text: 'View Edit Requests',
-                    ),
-                  ),
-                  PopupMenuItem(
-                    onTap: () =>
-                        sentEditProjectRequestDialog(context, projectModel.id),
-                    child: CustomIconWithText(
-                      color: AppColors.black,
-                      icon: Iconsax.send_2,
-                      text: 'Sent Edit Message',
-                    ),
-                  ),
-                ],
-                child: const Icon(Iconsax.more, color: AppColors.cardColor),
               ),
             ),
           ),

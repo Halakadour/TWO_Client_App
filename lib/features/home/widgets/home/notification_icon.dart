@@ -31,10 +31,10 @@ class NotificationsIcon extends StatelessWidget {
             ),
             if (unreadCount > 0)
               Positioned(
-                right: 4,
-                top: 0,
+                right: 5,
+                top: 1,
                 child: Container(
-                  padding: const EdgeInsets.all(8),
+                  padding: const EdgeInsets.all(5),
                   decoration: BoxDecoration(
                     color: AppColors.mainColor,
                     shape: BoxShape.circle,

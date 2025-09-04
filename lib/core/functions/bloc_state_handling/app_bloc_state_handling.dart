@@ -255,7 +255,7 @@ class AppBlocStateHandling {
       );
     } else if (state.homeContractListStatus == CasualStatus.success) {
       if (state.homeContractList.isEmpty) {
-        return EmptyStatusAnimation(width: 100, height: 100);
+        return EmptyStatusAnimation(width: 90, height: 90);
       } else {
         return ListView.builder(
           itemCount: state.homeContractList.length,
@@ -429,6 +429,20 @@ class AppBlocStateHandling {
       context.pop();
       showSuccessDialog(context, () => context.pop());
     } else if (state.updateProjectStatus == CasualStatus.failure) {
+      context.pop();
+      showErrorDialog(context, state.errorMessage);
+    } else {
+      const SizedBox();
+    }
+  }
+
+  Future<void> rateProject(AppState state, BuildContext context) async {
+    if (state.rateProjectStatus == CasualStatus.loading) {
+      showLoadingDialog(context);
+    } else if (state.rateProjectStatus == CasualStatus.success) {
+      context.pop();
+      showSuccessDialog(context, () => context.pop());
+    } else if (state.rateProjectStatus == CasualStatus.failure) {
       context.pop();
       showErrorDialog(context, state.errorMessage);
     } else {
